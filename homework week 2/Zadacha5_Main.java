@@ -1,5 +1,3 @@
-import java.util.*;
-
 public class Main {
     public static void main(String[] args) {
 
@@ -27,8 +25,7 @@ public class Main {
         double sum = 0;
         int counter = 0;
         System.out.println("Please input the type of currency: ");
-        Scanner scanner = new Scanner(System.in);
-        String typeOfCurrencyToSearchFor = scanner.next();
+        String typeOfCurrencyToSearchFor = "eur";
 
         for (int i = 0; i < accounts.length; i++) {
             Account currAcc = accounts[i];

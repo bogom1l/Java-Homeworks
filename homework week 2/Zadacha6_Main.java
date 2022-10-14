@@ -1,9 +1,5 @@
-import java.util.*;
-
 public class Main {
     public static void main(String[] args) {
-
-        Scanner scanner = new Scanner(System.in);
 
         Book[] books = new Book[10];
 
@@ -26,7 +22,7 @@ public class Main {
         }
 
         System.out.println("Please enter the year you want to search: ");
-        int yearToSearchBeyond = scanner.nextInt();
+        int yearToSearchBeyond = 2004;
         int sum = 0;
 
         for (int i = 0; i < books.length; i++) {

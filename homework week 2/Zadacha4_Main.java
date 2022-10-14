@@ -1,5 +1,3 @@
-import java.util.*;
-
 public class Main {
     public static void main(String[] args) {
 
@@ -24,8 +22,7 @@ public class Main {
         }
 
         //search by LastName
-        Scanner scanner = new Scanner(System.in);
-        String lastNameToSearchFor = scanner.next();
+        String lastNameToSearchFor = "Ivanov";
         int sum = 0;
 
         System.out.println("Found the following students with that last name: ");
