@@ -1,0 +1,16 @@
+<MyCalendar>
+    <Appointment>
+        <date>2001-01-01</date>
+        <endTime>15:00</endTime>
+        <name>a</name>
+        <note>b</note>
+        <startTime>14:00</startTime>
+    </Appointment>
+    <Appointment>
+        <date>2005-05-05</date>
+        <endTime>12:00</endTime>
+        <name>name1</name>
+        <note>note1</note>
+        <startTime>10:00</startTime>
+    </Appointment>
+</MyCalendar>
