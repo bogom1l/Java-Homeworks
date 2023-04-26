@@ -16,8 +16,22 @@ public class XMLHandler<T> {
 
     public void open(String filePath) throws IOException {
         file = new File(filePath);
+
         if (!file.exists()) {
-            throw new IOException("File does not exist.");
+            if (file.createNewFile()) {
+                System.out.println("File created: " + filePath);
+
+                String xml = "<MyCalendar>\n" + "</MyCalendar>"; // Write a sample XML book to the file
+                try (FileOutputStream fos = new FileOutputStream(file)) {
+                    fos.write(xml.getBytes());
+                } catch (IOException e) {
+                    throw new IOException("Failed to write to file.");
+                }
+            } else {
+                throw new IOException("Failed to create file.");
+            }
+        } else {
+            System.out.println("File exists: " + filePath);
         }
     }
 
@@ -43,4 +57,20 @@ public class XMLHandler<T> {
 
         fos.close();
     }
+
+    public void saveAs(T object, String filePath) throws JAXBException, IOException {
+        File newFile = new File(filePath);
+
+        JAXBContext jaxbContext = JAXBContext.newInstance(type);
+        Marshaller marshaller = jaxbContext.createMarshaller();
+
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+        FileOutputStream fos = new FileOutputStream(newFile);
+        marshaller.marshal(object, fos);
+
+        fos.close();
+    }
+
+
 }

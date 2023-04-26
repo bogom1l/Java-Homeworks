@@ -44,30 +44,23 @@ public class MyCalendar {
     }
 
     public void displayAll() {
-        List<Appointment> appointmentsOnDate = new ArrayList<>();
-        for (Appointment appointment : appointments) {
-            appointmentsOnDate.add(appointment);
-
-        }
-        for (Appointment appointment : appointmentsOnDate) {
-            System.out.println(appointment.getName() + " (" + appointment.getNote() + ")" + " - " + appointment.getStartTime() + " to " + appointment.getEndTime()
-                            + " - " + appointment.getDate());
+        for (Appointment appointment : this.appointments) {
+            System.out.println(appointment.getName()
+                    + " (" + appointment.getNote() + ")"
+                    + " - " + appointment.getStartTime()
+                    + " to " + appointment.getEndTime()
+                    + " - " + appointment.getDate());
         }
     }
 
-//    public void saveToFile(String filename) throws IOException {
-//        try (XMLEncoder encoder = new XMLEncoder(new FileOutputStream(filename))) {
-//            encoder.writeObject(appointments);
-//        }
-//    }
-//
-//    public void loadFromFile(String filename) throws IOException {
-//        try (XMLDecoder decoder = new XMLDecoder(new FileInputStream(filename))) {
-//            List<Appointment> loadedAppointments = (List<Appointment>) decoder.readObject();
-//            appointments.clear();
-//            appointments.addAll(loadedAppointments);
-//        }
-//    }
-
+    public Appointment getAppointmentByDateAndStartTime(String date, String startTime) {
+        for (Appointment appointment : this.appointments) {
+            if(appointment.getDate().equals(date)
+                && appointment.getStartTime().equals(startTime)){
+                return appointment;
+            }
+        }
+        return null;
+    }
 
 }

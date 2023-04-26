@@ -7,10 +7,8 @@ public class Main {
         try {
             CalendarManager calendarManager = new CalendarManager();
             calendarManager.start();
-        } catch (IOException | JAXBException e) {
+        } catch (IOException | JAXBException | CustomException e) {
             e.printStackTrace();
-        } catch (CustomException ex) {
-            ex.printStackTrace();
         }
 
 

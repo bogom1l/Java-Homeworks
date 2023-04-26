@@ -8,25 +8,21 @@ public class CalendarManager {
     Scanner scanner = new Scanner(System.in);
     XMLHandler<MyCalendar> handler = new XMLHandler<>(MyCalendar.class);
     String filePath = null;
-    public CalendarManager() {
-        //this.myCalendar = new MyCalendar(); // throws JAXBException //useless?
-        //this.myCalendar = null;
-    }
-
+    public CalendarManager() { }
     public void start() throws JAXBException, IOException, CustomException {
 
         while (true) {
-            System.out.println("Enter a command (open, close, save, add, remove, display, displayAll, exit): ");
+            System.out.println("Enter a command (open, close, save, saveAs, book, unbook, agenda, displayAll, change, find, exit): ");
             String command = scanner.next();
 
-            if (command.equals("add")) { // TODO: rename to 'book'
-                add();
+            if (command.equals("book")) {
+                book();
             }
-            else if (command.equals("remove")) { // TODO: rename to 'unbook'
-                remove();
+            else if (command.equals("unbook")) {
+                unbook();
             }
-            else if (command.equals("display")) { // TODO: rename to 'agenda'
-                display();
+            else if (command.equals("agenda")) {
+                agenda();
             }
             else if (command.equals("displayAll")) { //unnecessary, but helpful
                 displayAll();
@@ -43,6 +39,12 @@ public class CalendarManager {
             else if (command.equals("saveAs")) {
                 saveAs();
             }
+            else if (command.equals("change")) {
+                change();
+            }
+            else if (command.equals("find")) {
+                find();
+            }
             else if (command.equals("help")) {
                 help();
             }
@@ -57,7 +59,7 @@ public class CalendarManager {
         //scanner.close();
     }
 
-    public void add() throws CustomException {
+    public void book() throws CustomException {
 
         if(myCalendar == null) {
             throw new CustomException("FileNotOpened");
@@ -83,7 +85,7 @@ public class CalendarManager {
         System.out.println("Appointment added.");
     }
 
-    public void remove() throws CustomException {
+    public void unbook() throws CustomException {
         if(!isCurrentFileOpened()){
             throw new CustomException("FileNotOpened");
         }
@@ -101,7 +103,7 @@ public class CalendarManager {
         System.out.println("Appointment removed.");
     }
 
-    public void display() throws CustomException {
+    public void agenda() throws CustomException {
         if(!isCurrentFileOpened()){
             throw new CustomException("FileNotOpened");
         }
@@ -120,19 +122,17 @@ public class CalendarManager {
         myCalendar.displayAll();
     }
 
-    public void open() throws IOException, JAXBException, CustomException {
+    public void open() throws IOException, JAXBException {
         if(isCurrentFileOpened()){
             System.out.println("A file is already opened, please select another option.\n");
+            //ne prikluchwame programata, a prosto karame user-a da izbere druga opciq, po-udobno e
             return;
         }
 
         System.out.println("Enter file path: ");
         filePath = (scanner.next());
 
-        // Open the specified file and load its contents into the calendar
         handler.open(filePath); // + ".xml"
-
-        // read the XML file into a Java object
         myCalendar = handler.read();
 
         System.out.println("Successfully opened " + filePath);
@@ -145,6 +145,7 @@ public class CalendarManager {
 
         handler.close();
         System.out.println("Successfully closed " + filePath);
+        myCalendar = null;
     }
 
     public void save() throws JAXBException, IOException, CustomException {
@@ -156,14 +157,16 @@ public class CalendarManager {
         System.out.println("Successfully saved " + filePath);
     }
 
-    public void saveAs() throws CustomException {
+    public void saveAs() throws CustomException, JAXBException, IOException {
         if(!isCurrentFileOpened()){
             throw new CustomException("FileNotOpened");
         }
 
-        // Save the contents of the calendar to the specified file
-        System.out.println("DOESNT WORK FOR NOW");
-        System.out.println("Successfully saved as: " + filePath);
+        System.out.println("Enter pathToSave:");
+        String pathToSave = scanner.next();
+
+        handler.saveAs(myCalendar, pathToSave);
+        System.out.println("Successfully saved as: " + pathToSave);
     }
 
     public void help() {
@@ -172,38 +175,79 @@ public class CalendarManager {
         sb.append("open <file> \topens <file>\n");
         sb.append("close \t\t\tcloses currently opened file\n");
         sb.append("save \t\t\tsaves the currently open file\n");
-        sb.append("saveas <file> \tsaves the currently open file in <file>\n");
+        sb.append("saveAs <file> \tsaves the currently open file in <file>\n");
         sb.append("help \t\t\tprints this information\n");
         sb.append("exit \t\t\texists the program\n");
         System.out.println(sb);
     }
 
-    public void find() throws JAXBException, CustomException {
+    public void find() throws CustomException {
         if(!isCurrentFileOpened()){
             throw new CustomException("FileNotOpened");
         }
 
-        System.out.println("DOESNT WORK FOR NOW");
+        System.out.println("Enter note: ");
+        String note = (scanner.next());
 
-        // use the Java object
         List<Appointment> appointments = myCalendar.getAppointments();
         for (Appointment appointment : appointments) {
-            System.out.println(appointment.getName());
+            if(appointment.getNote().contains(note)
+                    || appointment.getName().contains(note)) {
+                System.out.println(appointment.getName()
+                        + " (" + appointment.getNote() + ")"
+                        + " - " + appointment.getStartTime()
+                        + " to " + appointment.getEndTime()
+                        + " - " + appointment.getDate());
+            }
         }
     }
 
-    public void modify() throws JAXBException, CustomException {
-
+    public void change() throws CustomException {
         if(!isCurrentFileOpened()){
             throw new CustomException("FileNotOpened");
         }
 
-        System.out.println("DOESNT WORK FOR NOW");
+        System.out.println("Enter date: ");
+        String date = (scanner.next());
 
-        List<Appointment> appointments = myCalendar.getAppointments();
-        // modify the Java object
-        Appointment newAppointment2 = new Appointment("2011-11-11", "11:00", "12:00", "modifyMethodMadeMe", "I am bad boy");
-        appointments.add(newAppointment2);
+        System.out.println("Enter startTime: ");
+        String startTime = (scanner.next());
+
+        Appointment appointment = myCalendar.getAppointmentByDateAndStartTime(date, startTime);
+
+        if (appointment == null) {
+            System.out.println("Appointment not found.");
+            return;
+        }
+
+        System.out.println("Enter option(date, startTime, endTime, name, note): ");
+        String option = (scanner.next());
+
+        System.out.println("Enter newValue: ");
+        String newValue = (scanner.next());
+
+        switch (option) {
+            case "date":
+                appointment.setDate(newValue);
+                break;
+            case "startTime":
+                appointment.setStartTime(newValue);
+                break;
+            case "endTime":
+                appointment.setEndTime(newValue);
+                break;
+            case "name":
+                appointment.setName(newValue);
+                break;
+            case "note":
+                appointment.setNote(newValue);
+                break;
+            default:
+                System.out.println("Invalid option.");
+                return;
+        }
+
+        System.out.println("Appointment changed successfully.");
     }
 
     private boolean isCurrentFileOpened() {
