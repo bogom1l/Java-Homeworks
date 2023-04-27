@@ -49,7 +49,8 @@ public class MyCalendar {
                     + " (" + appointment.getNote() + ")"
                     + " - " + appointment.getStartTime()
                     + " to " + appointment.getEndTime()
-                    + " - " + appointment.getDate());
+                    + " - " + appointment.getDate()
+                    + " [isHoliday: " + appointment.getIsHoliday() + "] ");
         }
     }
 

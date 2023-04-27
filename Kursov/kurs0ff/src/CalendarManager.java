@@ -1,58 +1,57 @@
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class CalendarManager {
     MyCalendar myCalendar = null;
     Scanner scanner = new Scanner(System.in);
     XMLHandler<MyCalendar> handler = new XMLHandler<>(MyCalendar.class);
     String filePath = null;
-    public CalendarManager() { }
+
+    public CalendarManager() {
+    }
+
     public void start() throws JAXBException, IOException, CustomException {
 
         while (true) {
-            System.out.println("Enter a command (open, close, save, saveAs, book, unbook, agenda, displayAll, change, find, exit): ");
+            System.out.println("Enter a command (open, close, save, saveAs, book, unbook, agenda, displayAll, change, find, holiday, busydays, findslot, exit): ");
             String command = scanner.next();
 
             if (command.equals("book")) {
                 book();
-            }
-            else if (command.equals("unbook")) {
+            } else if (command.equals("unbook")) {
                 unbook();
-            }
-            else if (command.equals("agenda")) {
+            } else if (command.equals("agenda")) {
                 agenda();
-            }
-            else if (command.equals("displayAll")) { //unnecessary, but helpful
+            } else if (command.equals("displayAll")) { //unnecessary, but helpful
                 displayAll();
-            }
-            else if (command.equals("open")) {
+            } else if (command.equals("open")) {
                 open();
-            }
-            else if (command.equals("close")) {
+            } else if (command.equals("close")) {
                 close();
-            }
-            else if (command.equals("save")) {
+            } else if (command.equals("save")) {
                 save();
-            }
-            else if (command.equals("saveAs")) {
+            } else if (command.equals("saveAs")) {
                 saveAs();
-            }
-            else if (command.equals("change")) {
+            } else if (command.equals("change")) {
                 change();
-            }
-            else if (command.equals("find")) {
+            } else if (command.equals("find")) {
                 find();
-            }
-            else if (command.equals("help")) {
+            } else if (command.equals("holiday")) {
+                holiday();
+            } else if (command.equals("busydays")) {
+                busydays();
+            } else if (command.equals("findslot")) {
+                findslot();
+            } else if (command.equals("help")) {
                 help();
-            }
-            else if (command.equals("exit")) {
+            } else if (command.equals("exit")) {
                 System.out.println("Exiting the program...");
                 break;
-            }
-            else {
+            } else {
                 System.out.println("Invalid command.");
             }
         }
@@ -61,7 +60,7 @@ public class CalendarManager {
 
     public void book() throws CustomException {
 
-        if(myCalendar == null) {
+        if (myCalendar == null) {
             throw new CustomException("FileNotOpened");
         }
 
@@ -80,13 +79,13 @@ public class CalendarManager {
         System.out.println("Enter note:");
         String note = scanner.next();
 
-        myCalendar.addAppointment(date,startTime,endTime,name,note);
+        myCalendar.addAppointment(date, startTime, endTime, name, note);
 
         System.out.println("Appointment added.");
     }
 
     public void unbook() throws CustomException {
-        if(!isCurrentFileOpened()){
+        if (!isCurrentFileOpened()) {
             throw new CustomException("FileNotOpened");
         }
 
@@ -104,7 +103,7 @@ public class CalendarManager {
     }
 
     public void agenda() throws CustomException {
-        if(!isCurrentFileOpened()){
+        if (!isCurrentFileOpened()) {
             throw new CustomException("FileNotOpened");
         }
 
@@ -115,7 +114,7 @@ public class CalendarManager {
     }
 
     public void displayAll() throws CustomException {
-        if(!isCurrentFileOpened()){
+        if (!isCurrentFileOpened()) {
             throw new CustomException("FileNotOpened");
         }
 
@@ -123,7 +122,7 @@ public class CalendarManager {
     }
 
     public void open() throws IOException, JAXBException {
-        if(isCurrentFileOpened()){
+        if (isCurrentFileOpened()) {
             System.out.println("A file is already opened, please select another option.\n");
             //ne prikluchwame programata, a prosto karame user-a da izbere druga opciq, po-udobno e
             return;
@@ -139,7 +138,7 @@ public class CalendarManager {
     }
 
     public void close() throws CustomException {
-        if(!isCurrentFileOpened()){
+        if (!isCurrentFileOpened()) {
             throw new CustomException("FileNotOpened");
         }
 
@@ -149,7 +148,7 @@ public class CalendarManager {
     }
 
     public void save() throws JAXBException, IOException, CustomException {
-        if(!isCurrentFileOpened()){
+        if (!isCurrentFileOpened()) {
             throw new CustomException("FileNotOpened");
         }
 
@@ -158,7 +157,7 @@ public class CalendarManager {
     }
 
     public void saveAs() throws CustomException, JAXBException, IOException {
-        if(!isCurrentFileOpened()){
+        if (!isCurrentFileOpened()) {
             throw new CustomException("FileNotOpened");
         }
 
@@ -182,7 +181,7 @@ public class CalendarManager {
     }
 
     public void find() throws CustomException {
-        if(!isCurrentFileOpened()){
+        if (!isCurrentFileOpened()) {
             throw new CustomException("FileNotOpened");
         }
 
@@ -191,19 +190,20 @@ public class CalendarManager {
 
         List<Appointment> appointments = myCalendar.getAppointments();
         for (Appointment appointment : appointments) {
-            if(appointment.getNote().contains(note)
+            if (appointment.getNote().contains(note)
                     || appointment.getName().contains(note)) {
                 System.out.println(appointment.getName()
                         + " (" + appointment.getNote() + ")"
                         + " - " + appointment.getStartTime()
                         + " to " + appointment.getEndTime()
-                        + " - " + appointment.getDate());
+                        + " - " + appointment.getDate()
+                        + " [isHoliday: " + appointment.getIsHoliday() + "] ");
             }
         }
     }
 
     public void change() throws CustomException {
-        if(!isCurrentFileOpened()){
+        if (!isCurrentFileOpened()) {
             throw new CustomException("FileNotOpened");
         }
 
@@ -250,12 +250,124 @@ public class CalendarManager {
         System.out.println("Appointment changed successfully.");
     }
 
+    public void holiday() throws CustomException {
+        if (!isCurrentFileOpened()) {
+            throw new CustomException("FileNotOpened");
+        }
+
+        System.out.println("Enter date: ");
+        String date = (scanner.next());
+
+        List<Appointment> appointments = myCalendar.getAppointments();
+        for (Appointment appointment : appointments) {
+            if (appointment.getDate().equals(date)) {
+                appointment.setIsHoliday(true);
+
+                //appointment.toString()
+                System.out.println(appointment.getName()
+                        + " (" + appointment.getNote() + ")"
+                        + " - " + appointment.getStartTime()
+                        + " to " + appointment.getEndTime()
+                        + " - " + appointment.getDate()
+                        + " [isHoliday: " + appointment.getIsHoliday() + "] ");
+
+                System.out.println("Successfully changed the date to holiday.");
+                return;
+            }
+        }
+    }
+
+    public void busydays() throws CustomException {
+        if (!isCurrentFileOpened()) {
+            throw new CustomException("FileNotOpened");
+        }
+
+        System.out.println("Enter start date(from): ");
+        String fromDate = (scanner.next());
+
+        System.out.println("Enter end date(to): ");
+        String toDate = (scanner.next());
+
+        LocalDate from = LocalDate.parse(fromDate);
+        LocalDate to = LocalDate.parse(toDate);
+
+        List<Appointment> filteredAppointments = new ArrayList<Appointment>();
+
+        List<Appointment> appointments = myCalendar.getAppointments();
+        for (Appointment appointment : appointments) {
+            LocalDate currentDate = LocalDate.parse(appointment.getDate());
+            if (currentDate.isAfter(from) && currentDate.isBefore(to)) {
+                filteredAppointments.add(appointment);
+            }
+        }
+
+        Collections.sort(filteredAppointments, new Comparator<Appointment>() {
+            public int compare(Appointment a1, Appointment a2) {
+                LocalDate date1 = LocalDate.parse(a1.getDate());
+                LocalDate date2 = LocalDate.parse(a2.getDate());
+                return date1.compareTo(date2);
+            }
+        });
+
+
+        for (Appointment appointment : filteredAppointments) {
+            System.out.println(appointment.toString());
+        }
+    }
+
+    public void findslot() throws CustomException {
+        if (!isCurrentFileOpened()) {
+            throw new CustomException("FileNotOpened");
+        }
+
+        System.out.println("Enter from date: ");
+        String fromDate = scanner.next();
+
+        System.out.println("Enter hours: ");
+        int hours = scanner.nextInt();
+        int minutes = hours * 60;
+
+        List<Appointment> appointments = myCalendar.getAppointments();
+        for (Appointment appointment : appointments) {
+            String[] startTimeInMinutesSplitted = appointment.getStartTime().split(":");
+
+            int startTimeInMinutes = Integer.parseInt(startTimeInMinutesSplitted[0]) * 60
+                    + Integer.parseInt(startTimeInMinutesSplitted[1]);
+
+            String[] endTimeInMinutesSplitted = appointment.getEndTime().split(":");
+
+            int endTimeInMinutes = Integer.parseInt(endTimeInMinutesSplitted[0]) * 60
+                    + Integer.parseInt(endTimeInMinutesSplitted[1]);
+
+            //System.out.println("Start time in minutes = " + startTimeInMinutes);
+            //System.out.println("End time in minutes = " + endTimeInMinutes);
+
+            int totalFreeMinutes = (endTimeInMinutes - startTimeInMinutes);
+            //System.out.println(totalFreeMinutes);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalTime stTime = LocalTime.parse(appointment.getStartTime(), formatter);
+            LocalTime eTime = LocalTime.parse(appointment.getStartTime(), formatter);
+
+            LocalTime startBoundary = LocalTime.parse("08:00", formatter);
+            LocalTime endBoundary = LocalTime.parse("17:00", formatter);
+
+            if(!appointment.getIsHoliday()
+                    && !stTime.isBefore(startBoundary)
+                    && !eTime.isAfter(endBoundary)
+                    && totalFreeMinutes >= minutes) {
+                System.out.println(appointment.toString());
+            }
+        }
+    }
+
+
+
+
     private boolean isCurrentFileOpened() {
         if(myCalendar == null) {
             return false; //throw new CustomException("FileNotOpened");
         }
         return true;
     }
-
-
 }

@@ -1,6 +1,5 @@
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.text.SimpleDateFormat;
 
 @XmlRootElement(name = "Appointment")
 public class Appointment {
@@ -9,6 +8,7 @@ public class Appointment {
     private String endTime;
     private String name;
     private String note;
+    private boolean isHoliday;
 
     public Appointment() {} //
 
@@ -18,6 +18,7 @@ public class Appointment {
         this.endTime = endTime;
         this.name = name;
         this.note = note;
+        this.isHoliday = false;
     }
 
     @XmlElement(name = "date")
@@ -64,9 +65,16 @@ public class Appointment {
     public void setNote(String note) {
         this.note = note;
     }
+    @XmlElement(name = "isHoliday")
+    public boolean getIsHoliday() {
+        return isHoliday;
+    }
+    public void setIsHoliday(boolean holiday) {
+        this.isHoliday = holiday;
+    }
 
+    @Override
     public String toString() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        return String.format("%s: %s - %s: %s (%s)", sdf.format(date), sdf.format(startTime), sdf.format(endTime), name, note);
+        return name + " (" + note + ")" + " - " + startTime + " to " + endTime + " - " + date + " [isHoliday: " + isHoliday + "] ";
     }
 }
