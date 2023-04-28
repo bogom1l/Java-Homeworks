@@ -48,4 +48,12 @@
         <note>qwe</note>
         <startTime>21:00</startTime>
     </Appointment>
+    <Appointment>
+        <date>2002-10-12</date>
+        <endTime>16:30</endTime>
+        <isHoliday>false</isHoliday>
+        <name>testApp</name>
+        <note>testNote</note>
+        <startTime>16:00</startTime>
+    </Appointment>
 </MyCalendar>

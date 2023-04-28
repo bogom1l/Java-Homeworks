@@ -1,5 +1,6 @@
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -10,11 +11,9 @@ public class CalendarManager {
     Scanner scanner = new Scanner(System.in);
     XMLHandler<MyCalendar> handler = new XMLHandler<>(MyCalendar.class);
     String filePath = null;
+    public CalendarManager() { }
 
-    public CalendarManager() {
-    }
-
-    public void start() throws JAXBException, IOException, CustomException {
+    public void start() throws JAXBException, IOException, CustomException, ParseException {
 
         while (true) {
             System.out.println("Enter a command (open, close, save, saveAs, book, unbook, agenda, displayAll, change, find, holiday, busydays, findslot, exit): ");
@@ -26,7 +25,7 @@ public class CalendarManager {
                 unbook();
             } else if (command.equals("agenda")) {
                 agenda();
-            } else if (command.equals("displayAll")) { //unnecessary, but helpful
+            } else if (command.equals("displayAll")) {
                 displayAll();
             } else if (command.equals("open")) {
                 open();
@@ -55,7 +54,6 @@ public class CalendarManager {
                 System.out.println("Invalid command.");
             }
         }
-        //scanner.close();
     }
 
     public void book() throws CustomException {
@@ -65,13 +63,13 @@ public class CalendarManager {
         }
 
         System.out.println("Enter date (YYYY-MM-DD):");
-        String date = (scanner.next());
+        String date = scanner.next();
 
         System.out.println("Enter start time (HH:MM):");
-        String startTime = (scanner.next());
+        String startTime = scanner.next();
 
         System.out.println("Enter end time (HH:MM):");
-        String endTime = (scanner.next());
+        String endTime = scanner.next();
 
         System.out.println("Enter name:");
         String name = scanner.next();
@@ -90,13 +88,13 @@ public class CalendarManager {
         }
 
         System.out.println("Enter date (YYYY-MM-DD):");
-        String date = (scanner.next());
+        String date = scanner.next();
 
         System.out.println("Enter start time (HH:MM):");
-        String startTime = (scanner.next());
+        String startTime = scanner.next();
 
         System.out.println("Enter end time (HH:MM):");
-        String endTime = (scanner.next());
+        String endTime = scanner.next();
 
         myCalendar.removeAppointment(date, startTime, endTime);
         System.out.println("Appointment removed.");
@@ -108,7 +106,7 @@ public class CalendarManager {
         }
 
         System.out.println("Enter date (YYYY-MM-DD):");
-        String date = (scanner.next());
+        String date = scanner.next();
 
         myCalendar.displayAppointments(date);
     }
@@ -129,9 +127,9 @@ public class CalendarManager {
         }
 
         System.out.println("Enter file path: ");
-        filePath = (scanner.next());
+        filePath = scanner.next();
 
-        handler.open(filePath); // + ".xml"
+        handler.open(filePath);
         myCalendar = handler.read();
 
         System.out.println("Successfully opened " + filePath);
@@ -186,18 +184,13 @@ public class CalendarManager {
         }
 
         System.out.println("Enter note: ");
-        String note = (scanner.next());
+        String note = scanner.next();
 
         List<Appointment> appointments = myCalendar.getAppointments();
         for (Appointment appointment : appointments) {
             if (appointment.getNote().contains(note)
                     || appointment.getName().contains(note)) {
-                System.out.println(appointment.getName()
-                        + " (" + appointment.getNote() + ")"
-                        + " - " + appointment.getStartTime()
-                        + " to " + appointment.getEndTime()
-                        + " - " + appointment.getDate()
-                        + " [isHoliday: " + appointment.getIsHoliday() + "] ");
+                System.out.println(appointment.toString());
             }
         }
     }
@@ -208,10 +201,10 @@ public class CalendarManager {
         }
 
         System.out.println("Enter date: ");
-        String date = (scanner.next());
+        String date = scanner.next();
 
         System.out.println("Enter startTime: ");
-        String startTime = (scanner.next());
+        String startTime = scanner.next();
 
         Appointment appointment = myCalendar.getAppointmentByDateAndStartTime(date, startTime);
 
@@ -221,10 +214,10 @@ public class CalendarManager {
         }
 
         System.out.println("Enter option(date, startTime, endTime, name, note): ");
-        String option = (scanner.next());
+        String option = scanner.next();
 
         System.out.println("Enter newValue: ");
-        String newValue = (scanner.next());
+        String newValue = scanner.next();
 
         switch (option) {
             case "date":
@@ -256,20 +249,14 @@ public class CalendarManager {
         }
 
         System.out.println("Enter date: ");
-        String date = (scanner.next());
+        String date = scanner.next();
 
         List<Appointment> appointments = myCalendar.getAppointments();
         for (Appointment appointment : appointments) {
             if (appointment.getDate().equals(date)) {
                 appointment.setIsHoliday(true);
 
-                //appointment.toString()
-                System.out.println(appointment.getName()
-                        + " (" + appointment.getNote() + ")"
-                        + " - " + appointment.getStartTime()
-                        + " to " + appointment.getEndTime()
-                        + " - " + appointment.getDate()
-                        + " [isHoliday: " + appointment.getIsHoliday() + "] ");
+                System.out.println(appointment.toString());
 
                 System.out.println("Successfully changed the date to holiday.");
                 return;
@@ -283,10 +270,10 @@ public class CalendarManager {
         }
 
         System.out.println("Enter start date(from): ");
-        String fromDate = (scanner.next());
+        String fromDate = scanner.next();
 
         System.out.println("Enter end date(to): ");
-        String toDate = (scanner.next());
+        String toDate = scanner.next();
 
         LocalDate from = LocalDate.parse(fromDate);
         LocalDate to = LocalDate.parse(toDate);
@@ -309,7 +296,6 @@ public class CalendarManager {
             }
         });
 
-
         for (Appointment appointment : filteredAppointments) {
             System.out.println(appointment.toString());
         }
@@ -322,6 +308,8 @@ public class CalendarManager {
 
         System.out.println("Enter from date: ");
         String fromDate = scanner.next();
+
+        LocalDate fromDateLocalDate = convertToLocalDate(fromDate);
 
         System.out.println("Enter hours: ");
         int hours = scanner.nextInt();
@@ -339,11 +327,7 @@ public class CalendarManager {
             int endTimeInMinutes = Integer.parseInt(endTimeInMinutesSplitted[0]) * 60
                     + Integer.parseInt(endTimeInMinutesSplitted[1]);
 
-            //System.out.println("Start time in minutes = " + startTimeInMinutes);
-            //System.out.println("End time in minutes = " + endTimeInMinutes);
-
             int totalFreeMinutes = (endTimeInMinutes - startTimeInMinutes);
-            //System.out.println(totalFreeMinutes);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
             LocalTime stTime = LocalTime.parse(appointment.getStartTime(), formatter);
@@ -352,17 +336,30 @@ public class CalendarManager {
             LocalTime startBoundary = LocalTime.parse("08:00", formatter);
             LocalTime endBoundary = LocalTime.parse("17:00", formatter);
 
+            LocalDate currentLocalDate = convertToLocalDate(appointment.getDate());
+
             if(!appointment.getIsHoliday()
                     && !stTime.isBefore(startBoundary)
                     && !eTime.isAfter(endBoundary)
-                    && totalFreeMinutes >= minutes) {
+                    && totalFreeMinutes >= minutes
+                    && currentLocalDate.isAfter(fromDateLocalDate)) {
                 System.out.println(appointment.toString());
             }
         }
     }
 
+    public boolean checkForValidData(String date1, String date2) {
+
+        return true;
+    }
 
 
+    public static LocalDate convertToLocalDate(String date){
+        String format = "yyyy-MM-dd";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        return localDate;
+    }
 
     private boolean isCurrentFileOpened() {
         if(myCalendar == null) {

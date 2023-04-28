@@ -45,12 +45,7 @@ public class MyCalendar {
 
     public void displayAll() {
         for (Appointment appointment : this.appointments) {
-            System.out.println(appointment.getName()
-                    + " (" + appointment.getNote() + ")"
-                    + " - " + appointment.getStartTime()
-                    + " to " + appointment.getEndTime()
-                    + " - " + appointment.getDate()
-                    + " [isHoliday: " + appointment.getIsHoliday() + "] ");
+            System.out.println(appointment.toString());
         }
     }
 

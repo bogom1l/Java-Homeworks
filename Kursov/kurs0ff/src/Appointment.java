@@ -25,43 +25,34 @@ public class Appointment {
     public String getDate() {
         return date;
     }
-
     public void setDate(String date) {
         this.date = date;
     }
-
     @XmlElement(name = "startTime")
     public String getStartTime() {
         return startTime;
     }
-
     public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
-
     @XmlElement(name = "endTime")
     public String getEndTime() {
         return endTime;
     }
-
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
-
     @XmlElement(name = "name")
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     @XmlElement(name = "note")
     public String getNote() {
         return note;
     }
-
     public void setNote(String note) {
         this.note = note;
     }
