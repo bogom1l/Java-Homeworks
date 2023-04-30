@@ -52,11 +52,14 @@ public class MyCalendar {
     public Appointment getAppointmentByDateAndStartTime(String date, String startTime) {
         for (Appointment appointment : this.appointments) {
             if(appointment.getDate().equals(date)
-                && appointment.getStartTime().equals(startTime)){
+                    && appointment.getStartTime().equals(startTime)){
                 return appointment;
             }
         }
         return null;
     }
 
+    public void clear() {
+        this.appointments = null;
+    }
 }

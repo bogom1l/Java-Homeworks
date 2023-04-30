@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MyCalendar>
+    <Appointment>
+        <date>2024-04-02</date>
+        <endTime>22:00</endTime>
+        <isHoliday>false</isHoliday>
+        <name>name1</name>
+        <note>note1</note>
+        <startTime>20:00</startTime>
+    </Appointment>
+</MyCalendar>

@@ -10,7 +10,7 @@ public class Appointment {
     private String note;
     private boolean isHoliday;
 
-    public Appointment() {} //
+    public Appointment() {}
 
     public Appointment(String date, String startTime, String endTime, String name, String note) {
         this.date = date;
@@ -28,6 +28,7 @@ public class Appointment {
     public void setDate(String date) {
         this.date = date;
     }
+
     @XmlElement(name = "startTime")
     public String getStartTime() {
         return startTime;
@@ -35,6 +36,7 @@ public class Appointment {
     public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
+
     @XmlElement(name = "endTime")
     public String getEndTime() {
         return endTime;
@@ -42,6 +44,7 @@ public class Appointment {
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
+
     @XmlElement(name = "name")
     public String getName() {
         return name;
@@ -49,6 +52,7 @@ public class Appointment {
     public void setName(String name) {
         this.name = name;
     }
+
     @XmlElement(name = "note")
     public String getNote() {
         return note;
@@ -56,6 +60,7 @@ public class Appointment {
     public void setNote(String note) {
         this.note = note;
     }
+
     @XmlElement(name = "isHoliday")
     public boolean getIsHoliday() {
         return isHoliday;

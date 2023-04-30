@@ -21,7 +21,7 @@ public class XMLHandler<T> {
             if (file.createNewFile()) {
                 System.out.println("File created: " + filePath);
 
-                String xml = "<MyCalendar>\n" + "</MyCalendar>"; // Write a sample XML MyCalendar to the file
+                String xml = "<MyCalendar>\n" + "</MyCalendar>";
 
                 try (FileOutputStream fos = new FileOutputStream(file)) {
                     fos.write(xml.getBytes());
@@ -72,5 +72,4 @@ public class XMLHandler<T> {
 
         fos.close();
     }
-
 }
