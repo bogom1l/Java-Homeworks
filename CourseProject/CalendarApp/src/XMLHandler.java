@@ -6,13 +6,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class XMLHandler<T> {
-    private final Class<T> type;
+public class XMLHandler {
     private File file;
-
-    public XMLHandler(Class<T> type) {
-        this.type = type;
-    }
+    public XMLHandler() { }
 
     public void open(String filePath) throws IOException {
         file = new File(filePath);
@@ -40,16 +36,14 @@ public class XMLHandler<T> {
         file = null;
     }
 
-    public T read() throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(type);
+    public MyCalendar read() throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(MyCalendar.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        //T object = (T) unmarshaller.unmarshal(file);
-        T object = type.cast(unmarshaller.unmarshal(file));
-        return object;
+        return (MyCalendar) unmarshaller.unmarshal(file);
     }
 
-    public void save(T object) throws JAXBException, IOException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(type);
+    public void save(MyCalendar object) throws JAXBException, IOException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(MyCalendar.class);
         Marshaller marshaller = jaxbContext.createMarshaller();
 
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -57,16 +51,12 @@ public class XMLHandler<T> {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             marshaller.marshal(object, fos);
         }
-        /* FileOutputStream fos = new FileOutputStream(file);
-        marshaller.marshal(object, fos);
-        fos.close();
-        */
     }
 
-    public void saveAs(T object, String filePath) throws JAXBException, IOException {
+    public void saveAs(MyCalendar object, String filePath) throws JAXBException, IOException {
         File newFile = new File(filePath);
 
-        JAXBContext jaxbContext = JAXBContext.newInstance(type);
+        JAXBContext jaxbContext = JAXBContext.newInstance(MyCalendar.class);
         Marshaller marshaller = jaxbContext.createMarshaller();
 
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -74,9 +64,5 @@ public class XMLHandler<T> {
         try (FileOutputStream fos = new FileOutputStream(newFile)) {
             marshaller.marshal(object, fos);
         }
-        /*FileOutputStream fos = new FileOutputStream(newFile);
-        marshaller.marshal(object, fos);
-
-        fos.close();*/
     }
 }

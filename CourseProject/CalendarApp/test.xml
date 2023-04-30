@@ -8,4 +8,28 @@
         <note>note1</note>
         <startTime>20:00</startTime>
     </Appointment>
+    <Appointment>
+        <date>2027-04-02</date>
+        <endTime>22:00</endTime>
+        <isHoliday>false</isHoliday>
+        <name>name2</name>
+        <note>note2</note>
+        <startTime>20:00</startTime>
+    </Appointment>
+    <Appointment>
+        <date>2026-02-02</date>
+        <endTime>22:00</endTime>
+        <isHoliday>false</isHoliday>
+        <name>name3</name>
+        <note>note3</note>
+        <startTime>20:00</startTime>
+    </Appointment>
+    <Appointment>
+        <date>2029-04-12</date>
+        <endTime>22:00</endTime>
+        <isHoliday>false</isHoliday>
+        <name>name4</name>
+        <note>note4</note>
+        <startTime>20:00</startTime>
+    </Appointment>
 </MyCalendar>

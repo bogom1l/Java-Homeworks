@@ -15,7 +15,7 @@ public class CalendarManager {
 
     private MyCalendar myCalendar = null;
     private Scanner scanner = new Scanner(System.in);
-    private XMLHandler<MyCalendar> handler = new XMLHandler<>(MyCalendar.class);
+    private XMLHandler handler = new XMLHandler();
     private String filePath = null;
 
     public CalendarManager() { }
