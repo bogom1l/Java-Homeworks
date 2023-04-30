@@ -43,7 +43,8 @@ public class XMLHandler<T> {
     public T read() throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(type);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        T object = (T) unmarshaller.unmarshal(file);
+        //T object = (T) unmarshaller.unmarshal(file);
+        T object = type.cast(unmarshaller.unmarshal(file));
         return object;
     }
 
@@ -53,10 +54,13 @@ public class XMLHandler<T> {
 
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-        FileOutputStream fos = new FileOutputStream(file);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            marshaller.marshal(object, fos);
+        }
+        /* FileOutputStream fos = new FileOutputStream(file);
         marshaller.marshal(object, fos);
-
         fos.close();
+        */
     }
 
     public void saveAs(T object, String filePath) throws JAXBException, IOException {
@@ -67,9 +71,12 @@ public class XMLHandler<T> {
 
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-        FileOutputStream fos = new FileOutputStream(newFile);
+        try (FileOutputStream fos = new FileOutputStream(newFile)) {
+            marshaller.marshal(object, fos);
+        }
+        /*FileOutputStream fos = new FileOutputStream(newFile);
         marshaller.marshal(object, fos);
 
-        fos.close();
+        fos.close();*/
     }
 }

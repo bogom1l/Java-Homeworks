@@ -30,13 +30,19 @@ public class MyCalendar {
         );
     }
 
-    public void displayAppointments(String date) {
+    public void displayAppointmentsByDate(String date) {
         List<Appointment> appointmentsOnDate = new ArrayList<>();
         for (Appointment appointment : appointments) {
             if (appointment.getDate().equals(date)) {
                 appointmentsOnDate.add(appointment);
             }
         }
+
+        if(appointmentsOnDate.isEmpty()){
+            System.out.println("Did not found any appointments on that date.");
+            return;
+        }
+
         appointmentsOnDate.sort(Comparator.comparing(Appointment::getStartTime));
         for (Appointment appointment : appointmentsOnDate) {
             System.out.println(appointment.getName() + " - " + appointment.getStartTime() + " to " + appointment.getEndTime());
@@ -44,6 +50,11 @@ public class MyCalendar {
     }
 
     public void displayAll() {
+        if(this.appointments.isEmpty()){
+            System.out.println("Did not found any appointments in this calendar.");
+            return;
+        }
+
         for (Appointment appointment : this.appointments) {
             System.out.println(appointment.toString());
         }

@@ -25,7 +25,9 @@ public class CalendarManager {
         printDescription();
 
         while (true) {
-            System.out.println("Enter a command (open, close, save, saveAs, book, unbook, agenda, displayAll, change, find, holiday, busydays, findslot, clear, exit): ");
+            System.out.println("Enter a command (open, close, save, saveAs, book, unbook, " +
+                    "agenda, displayAll, change, find, holiday, busydays, findslot, clear, exit): ");
+
             String command = scanner.next();
 
             if (command.equals("book")) {
@@ -68,9 +70,8 @@ public class CalendarManager {
     }
 
     public void book() throws CustomException {
-
-        if (myCalendar == null) {
-            throw new CustomException("FileNotOpened");
+        if (!isCurrentFileOpened()) {
+            throw new CustomException("File is not opened!");
         }
 
         System.out.println("Enter date (YYYY-MM-DD):");
@@ -94,7 +95,7 @@ public class CalendarManager {
             throw new CustomException("Invalid time. Time must be between 00:00 and 23:59.");
         }
 
-        if(!checkIfMinTimeBeforeMaxTime(startTime,endTime)){
+        if(!checkIfMinTimeBeforeMaxTime(startTime, endTime)){
             throw new CustomException("Invalid time. EndTime should be after StartTime.");
         }
 
@@ -111,7 +112,7 @@ public class CalendarManager {
 
     public void unbook() throws CustomException {
         if (!isCurrentFileOpened()) {
-            throw new CustomException("FileNotOpened");
+            throw new CustomException("File is not opened!");
         }
 
         System.out.println("Enter date (YYYY-MM-DD):");
@@ -129,18 +130,18 @@ public class CalendarManager {
 
     public void agenda() throws CustomException {
         if (!isCurrentFileOpened()) {
-            throw new CustomException("FileNotOpened");
+            throw new CustomException("File is not opened!");
         }
 
         System.out.println("Enter date (YYYY-MM-DD):");
         String date = scanner.next();
 
-        myCalendar.displayAppointments(date);
+        myCalendar.displayAppointmentsByDate(date);
     }
 
     public void displayAll() throws CustomException {
         if (!isCurrentFileOpened()) {
-            throw new CustomException("FileNotOpened");
+            throw new CustomException("File is not opened!");
         }
 
         myCalendar.displayAll();
@@ -157,6 +158,7 @@ public class CalendarManager {
         filePath = scanner.next();
 
         handler.open(filePath);
+
         myCalendar = handler.read();
 
         System.out.println("Successfully opened " + filePath);
@@ -164,32 +166,35 @@ public class CalendarManager {
 
     public void close() throws CustomException {
         if (!isCurrentFileOpened()) {
-            throw new CustomException("FileNotOpened");
+            throw new CustomException("File is not opened!");
         }
 
         handler.close();
+
         System.out.println("Successfully closed " + filePath);
         myCalendar = null;
     }
 
     public void save() throws JAXBException, IOException, CustomException {
         if (!isCurrentFileOpened()) {
-            throw new CustomException("FileNotOpened");
+            throw new CustomException("File is not opened!");
         }
 
         handler.save(myCalendar);
+
         System.out.println("Successfully saved " + filePath);
     }
 
     public void saveAs() throws CustomException, JAXBException, IOException {
         if (!isCurrentFileOpened()) {
-            throw new CustomException("FileNotOpened");
+            throw new CustomException("File is not opened!");
         }
 
         System.out.println("Enter new file name:");
         String pathToSave = scanner.next();
 
         handler.saveAs(myCalendar, pathToSave);
+
         System.out.println("Successfully saved as: " + pathToSave);
     }
 
@@ -219,7 +224,7 @@ public class CalendarManager {
 
     public void find() throws CustomException {
         if (!isCurrentFileOpened()) {
-            throw new CustomException("FileNotOpened");
+            throw new CustomException("File is not opened!");
         }
 
         System.out.println("Enter note: ");
@@ -236,7 +241,7 @@ public class CalendarManager {
 
     public void change() throws CustomException {
         if (!isCurrentFileOpened()) {
-            throw new CustomException("FileNotOpened");
+            throw new CustomException("File is not opened!");
         }
 
         System.out.println("Enter date: ");
@@ -284,7 +289,7 @@ public class CalendarManager {
 
     public void holiday() throws CustomException {
         if (!isCurrentFileOpened()) {
-            throw new CustomException("FileNotOpened");
+            throw new CustomException("File is not opened!");
         }
 
         System.out.println("Enter date: ");
@@ -296,7 +301,6 @@ public class CalendarManager {
                 appointment.setIsHoliday(true);
 
                 System.out.println(appointment.toString());
-
                 System.out.println("Successfully changed the date to holiday.");
                 return;
             }
@@ -305,7 +309,7 @@ public class CalendarManager {
 
     public void busydays() throws CustomException {
         if (!isCurrentFileOpened()) {
-            throw new CustomException("FileNotOpened");
+            throw new CustomException("File is not opened!");
         }
 
         System.out.println("Enter start date(from): ");
@@ -327,12 +331,10 @@ public class CalendarManager {
             }
         }
 
-        Collections.sort(filteredAppointments, new Comparator<Appointment>() {
-            public int compare(Appointment a1, Appointment a2) {
-                LocalDate date1 = LocalDate.parse(a1.getDate());
-                LocalDate date2 = LocalDate.parse(a2.getDate());
-                return date1.compareTo(date2);
-            }
+        filteredAppointments.sort((a1, a2) -> {
+            LocalDate date1 = LocalDate.parse(a1.getDate());
+            LocalDate date2 = LocalDate.parse(a2.getDate());
+            return date1.compareTo(date2);
         });
 
         for (Appointment appointment : filteredAppointments) {
@@ -342,7 +344,7 @@ public class CalendarManager {
 
     public void findslot() throws CustomException {
         if (!isCurrentFileOpened()) {
-            throw new CustomException("FileNotOpened");
+            throw new CustomException("File is not opened!");
         }
 
         System.out.println("Enter from date: ");
@@ -389,14 +391,18 @@ public class CalendarManager {
 
     public void clear() throws IOException, CustomException {
         if (!isCurrentFileOpened()) {
-            throw new CustomException("FileNotOpened");
+            throw new CustomException("File is not opened!");
         }
 
         myCalendar.clear();
 
-        String xml = "<MyCalendar>\n" + "</MyCalendar>"; // Write a sample XML MyCalendar to the file
-        FileOutputStream fos = new FileOutputStream(filePath);
-        fos.write(xml.getBytes());
+        String xml = "<MyCalendar>\n" + "</MyCalendar>";
+
+        try (FileOutputStream fos = new FileOutputStream(filePath)) {
+            fos.write(xml.getBytes());
+        }
+        //FileOutputStream fos = new FileOutputStream(filePath);
+        //fos.write(xml.getBytes());
 
         System.out.println("Successfully cleared " + filePath);
     }
@@ -437,14 +443,14 @@ public class CalendarManager {
 
     private boolean isCurrentFileOpened() {
         if(myCalendar == null) {
-            return false; //throw new CustomException("FileNotOpened");
+            return false;
         }
         return true;
     }
 
     private void printDescription() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Hello! This is a Calendar Manager Application.\n");
+        sb.append("Welcome! This is a Calendar Manager Application.\n");
         sb.append("To get started, you can type 'help' to see a list of the available commands and their descriptions.\n");
 
         System.out.println(sb.toString());
