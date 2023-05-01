@@ -15,7 +15,8 @@ public class CalendarManager {
 
     private MyCalendar myCalendar = null;
     private Scanner scanner = new Scanner(System.in);
-    private XMLHandler handler = new XMLHandler();
+
+    private XMLHelper xmlHelper = new XMLHelper();
     private String filePath = null;
 
     public CalendarManager() { }
@@ -157,9 +158,9 @@ public class CalendarManager {
         System.out.println("Enter file path: ");
         filePath = scanner.next();
 
-        handler.open(filePath);
+        xmlHelper.open(filePath);
 
-        myCalendar = handler.read();
+        myCalendar = xmlHelper.read();
 
         System.out.println("Successfully opened " + filePath);
     }
@@ -169,7 +170,7 @@ public class CalendarManager {
             throw new CustomException("File is not opened!");
         }
 
-        handler.close();
+        xmlHelper.close();
 
         System.out.println("Successfully closed " + filePath);
         myCalendar = null;
@@ -180,7 +181,7 @@ public class CalendarManager {
             throw new CustomException("File is not opened!");
         }
 
-        handler.save(myCalendar);
+        xmlHelper.save(myCalendar);
 
         System.out.println("Successfully saved " + filePath);
     }
@@ -193,7 +194,7 @@ public class CalendarManager {
         System.out.println("Enter new file name:");
         String pathToSave = scanner.next();
 
-        handler.saveAs(myCalendar, pathToSave);
+        xmlHelper.saveAs(myCalendar, pathToSave);
 
         System.out.println("Successfully saved as: " + pathToSave);
     }
@@ -305,6 +306,8 @@ public class CalendarManager {
                 return;
             }
         }
+
+        System.out.println("Did not find that date in the calendar.");
     }
 
     public void busydays() throws CustomException {
@@ -401,8 +404,6 @@ public class CalendarManager {
         try (FileOutputStream fos = new FileOutputStream(filePath)) {
             fos.write(xml.getBytes());
         }
-        //FileOutputStream fos = new FileOutputStream(filePath);
-        //fos.write(xml.getBytes());
 
         System.out.println("Successfully cleared " + filePath);
     }

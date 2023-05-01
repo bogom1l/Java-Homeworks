@@ -6,9 +6,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class XMLHandler {
+public class XMLHelper {
     private File file;
-    public XMLHandler() { }
+    public XMLHelper() { }
 
     public void open(String filePath) throws IOException {
         file = new File(filePath);
