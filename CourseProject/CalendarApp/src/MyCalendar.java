@@ -25,8 +25,8 @@ public class MyCalendar {
     public void removeAppointment(String date, String startTime, String endTime) {
         appointments.removeIf(appointment ->
                 appointment.getDate().equals(date) &&
-                        appointment.getStartTime().equals(startTime) &&
-                        appointment.getEndTime().equals(endTime)
+                appointment.getStartTime().equals(startTime) &&
+                appointment.getEndTime().equals(endTime)
         );
     }
 
