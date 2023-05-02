@@ -151,7 +151,6 @@ public class CalendarManager {
     public void open() throws IOException, JAXBException {
         if (isCurrentFileOpened()) {
             System.out.println("A file is already opened, please select another option.\n");
-            //ne prikluchwame programata, a prosto karame user-a da izbere druga opciq, po-udobno e
             return;
         }
 
